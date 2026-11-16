@@ -16,12 +16,26 @@ Use isolated local or test data. Never send real messages, charge money, delete 
 
 ## Test quality
 
+For a bug fix, turn the reproduction into a durable regression test using the existing runner. Drive a stable interface and assert the consumer-visible contract. Include a sibling failure that distinguishes the root cause from a symptom patch, plus a valid case that must retain its behavior.
+
+Run the new test against the unfixed implementation and confirm that it fails for the bug, then run it with the fix. A syntax error, missing dependency, or assertion on a private helper is not that proof. Use a temporary copy or another safe method that preserves unrelated work. Record both results. If the earlier implementation cannot be exercised safely, state that the test's ability to catch the original bug is unverified.
+
+For a multi-module fix, test through the boundary that previously lost or corrupted the value. Keep a focused unit test when useful, but also exercise the caller wiring. Check stored state, emitted events, and negative effects such as an unwanted write or duplicate message when the contract covers them.
+
 Ask two questions about each new test:
 
 1. Would it fail if the observed behavior broke?
 2. Would it still pass if the internals changed without changing that behavior?
 
 Derive expected values from the contract, not by calling the same implementation twice. Mock external boundaries only where necessary. Prefer a small real reproduction over a large test that mainly verifies its own mocks
+
+When a mocked side effect must be absent, include a control where the effect occurs so the test demonstrates that it can observe it. Avoid tests that pass because all meaningful code has been mocked away.
+
+## Cover the change's consumers
+
+For a changed contract or shared owner, list the affected readers and writers and the check that covers each. Include old persisted data, alternate entry points, generated artifacts, and external consumers when applicable. Mark unavailable paths unverified rather than assuming a local build covers them.
+
+Separate intended behavior changes from collateral ones. Inspect callers that rely on the previous ordering, representation, error, or side effect. Rerun a representative unchanged workflow alongside the new behavior. Disclose any compatibility change even if the main task now passes.
 
 ## If the repo is difficult to drive
 
