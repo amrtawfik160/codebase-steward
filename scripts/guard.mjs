@@ -90,6 +90,13 @@ function validateConfig(config) {
     return { ...rule, includes: rule.files.map(globRegex), excludes: (rule.exclude ?? []).map(globRegex), tokens: [...new Set(rule.forbid)] };
   });
 }
+// Windows can spell one directory with both long and 8.3 paths. Compare file IDs.
+function sameDirectory(a, b) {
+  const left = fs.statSync(a, { bigint: true });
+  const right = fs.statSync(b, { bigint: true });
+  return left.dev === right.dev && left.ino === right.ino;
+}
+
 function inside(root, target) {
   const relative = path.relative(root, target);
   return relative !== '..' && !relative.startsWith('..' + path.sep) && !path.isAbsolute(relative);
@@ -174,7 +181,7 @@ try {
   noSymlinks(root);
   if (!fs.statSync(root).isDirectory()) fail('Root must be a directory');
   const gitRoot = text(git(root, ['rev-parse', '--show-toplevel'])).replace(/\r?\n$/, '');
-  if (path.relative(fs.realpathSync(root), fs.realpathSync(gitRoot)) !== '') fail('--root must be the Git working-tree root');
+  if (!sameDirectory(root, gitRoot)) fail('--root must be the Git working-tree root');
   const configPath = path.resolve(root, options.config);
   if (!inside(root, configPath)) fail('Config path must stay inside root');
   let config;

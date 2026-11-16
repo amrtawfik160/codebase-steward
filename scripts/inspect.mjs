@@ -124,6 +124,13 @@ function shellWord(value) {
   return /^[A-Za-z0-9_:@./-]+$/.test(value) && !value.startsWith('-') ? value : `'${value.replaceAll("'", "'\\''")}'`;
 }
 
+// Windows can spell one directory with both long and 8.3 paths. Compare file IDs.
+function sameDirectory(a, b) {
+  const left = fs.statSync(a, { bigint: true });
+  const right = fs.statSync(b, { bigint: true });
+  return left.dev === right.dev && left.ino === right.ino;
+}
+
 export function inspect(rootInput) {
   const root = path.resolve(rootInput);
   let rootCheck;
@@ -133,7 +140,7 @@ export function inspect(rootInput) {
   let top, tracked;
   try {
     top = git(root, ['rev-parse', '--show-toplevel']).replace(/\r?\n$/, '');
-    if (path.relative(fs.realpathSync(root), fs.realpathSync(top)) !== '') throw new Error('not-top-level');
+    if (!sameDirectory(root, top)) throw new Error('not-top-level');
     tracked = [...new Set(git(root, ['ls-files', '--cached', '-z']).split('\0').filter(Boolean))].sort();
   } catch (error) {
     if (error.message === 'not-top-level') throw new Error('--root must be the Git top-level, not a subdirectory');
