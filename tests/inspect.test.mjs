@@ -199,3 +199,11 @@ test('help documents limits, human output is advisory, JSON is deterministic and
   assert.equal(help.status, 0);
   for (const expected of ['1 MiB', '64 MiB', '10,000', '50 signal', 'exit 2', 'symlink', 'not a secret detector']) assert.ok(help.stdout.includes(expected), expected);
 });
+
+test('Windows drive-letter case does not change repository identity', { skip: process.platform !== 'win32' }, t => {
+  const root = fixture(t); put(root, 'src/a.js', 'export const a = 1'); track(root);
+  const alternate = root[0] === root[0].toUpperCase() ? root[0].toLowerCase() + root.slice(1) : root[0].toUpperCase() + root.slice(1);
+  const out = run(alternate, '--json');
+  assert.equal(out.status, 0, out.stderr);
+  assert.equal(JSON.parse(out.stdout).summary.trackedFiles, 1);
+});

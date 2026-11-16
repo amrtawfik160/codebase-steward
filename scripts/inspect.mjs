@@ -133,7 +133,7 @@ export function inspect(rootInput) {
   let top, tracked;
   try {
     top = git(root, ['rev-parse', '--show-toplevel']).replace(/\r?\n$/, '');
-    if (path.resolve(top) !== root) throw new Error('not-top-level');
+    if (path.relative(fs.realpathSync(root), fs.realpathSync(top)) !== '') throw new Error('not-top-level');
     tracked = [...new Set(git(root, ['ls-files', '--cached', '-z']).split('\0').filter(Boolean))].sort();
   } catch (error) {
     if (error.message === 'not-top-level') throw new Error('--root must be the Git top-level, not a subdirectory');

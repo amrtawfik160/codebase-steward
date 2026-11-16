@@ -174,7 +174,7 @@ try {
   noSymlinks(root);
   if (!fs.statSync(root).isDirectory()) fail('Root must be a directory');
   const gitRoot = text(git(root, ['rev-parse', '--show-toplevel'])).replace(/\r?\n$/, '');
-  if (path.resolve(gitRoot) !== root) fail('--root must be the Git working-tree root');
+  if (path.relative(fs.realpathSync(root), fs.realpathSync(gitRoot)) !== '') fail('--root must be the Git working-tree root');
   const configPath = path.resolve(root, options.config);
   if (!inside(root, configPath)) fail('Config path must stay inside root');
   let config;

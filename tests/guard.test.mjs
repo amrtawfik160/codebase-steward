@@ -189,3 +189,11 @@ test('a file selected by multiple rules is scanned once and checked by each', t 
 test('matching tracked path replaced by a directory is incomplete', t => {
   const r = repo(t); fs.unlinkSync(path.join(r.root, 'src/a.ts')); fs.mkdirSync(path.join(r.root, 'src/a.ts')); status(r.run(), 2, 'incomplete');
 });
+
+test('Windows drive-letter case does not change repository identity', { skip: process.platform !== 'win32' }, t => {
+  const r = repo(t);
+  const alternate = r.root[0] === r.root[0].toUpperCase() ? r.root[0].toLowerCase() + r.root.slice(1) : r.root[0].toUpperCase() + r.root.slice(1);
+  const out = spawnSync(process.execPath, [script, '--root', alternate, '--json'], { encoding: 'utf8' });
+  assert.equal(out.status, 0, out.stdout + out.stderr);
+  assert.equal(JSON.parse(out.stdout).status, 'pass');
+});
