@@ -1,0 +1,10 @@
+{
+  "name": "codebase-steward",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A focused coding-agent skill with read-only inventory and explicit regression guards",
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": { "test": "node --test" },
+  "license": "MIT"
+}

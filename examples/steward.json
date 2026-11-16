@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "rules": [
+    {
+      "id": "no-legacy-client",
+      "files": ["src/**/*.ts", "src/**/*.tsx"],
+      "exclude": ["src/legacy/**"],
+      "forbid": ["@app/legacy-client"],
+      "message": "Use @app/client instead; keep the legacy adapter inside src/legacy/"
+    }
+  ]
+}
