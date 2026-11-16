@@ -34,7 +34,7 @@ The installer supports Claude Code, Codex, Cursor, and other compatible agents. 
 - **Enforced lessons:** turn repeated mistakes into types, lint rules, or tests rather than adding another paragraph of instructions
 - **Two optional tools:** inventory a Git repo without executing its code, and enforce explicitly configured forbidden text
 
-The core loop keeps small tasks focused. Multi-file bugs, boundary changes, and reviews load targeted references when needed. Bug fixes include a regression test shown to fail before the fix and pass afterward. Reviews check reachability and existing protections before reporting a defect.
+The core loop keeps small tasks focused. Multi-file bugs, boundary changes, and reviews load targeted references when needed. For bug fixes, the skill asks the agent to add a regression test and show it fails before the fix and passes afterward. For reviews, it asks the agent to check reachability and existing protections before reporting a defect. A separate round 2 evaluation on complex tasks is pending.
 
 ![Workflow: inspect the code, decide on the root cause, improve within scope, and prove the result; turn repeated mistakes into checks](docs/workflow.png)
 
