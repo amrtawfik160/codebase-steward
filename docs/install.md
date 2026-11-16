@@ -31,7 +31,7 @@ If the destination already exists, review it before updating. Never overwrite lo
 
 ## Other agents
 
-Use the Skills CLI's supported agent option, or copy this folder into the agent's documented skill location. Keep `SKILL.md`, `references/`, and `scripts/` together, along with `LICENSE`, `NOTICE.md`, and `licenses/`
+Use the Skills CLI's supported agent option, or copy this folder into the agent's documented skill location. Keep `SKILL.md`, `references/`, `scripts/`, and `docs/tools.md` together, along with `LICENSE`, `NOTICE.md`, and `licenses/`
 
 If your agent does not have a skill loader, give it the path to `SKILL.md` and ask it to read that file before starting
 
