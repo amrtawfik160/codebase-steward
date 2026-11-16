@@ -2,6 +2,12 @@
 
 Start with a concrete obstacle in the current task. A folder layout, library, or pattern is not wrong merely because another style exists
 
+## Trace a representative operation
+
+For an architecture review or boundary change, follow one real operation from entry point through state changes to its consumers and effects. Record each boundary's input, output, owner, and invariant. Follow a failure path too. Use file locations and actual calls, not folder names alone.
+
+Check whether multiple writers coordinate through a transaction or shared operation. Check whether a wrapper enforces policy, adapts a platform, or supports compatibility before calling it redundant. Separate observed defects from maintainability costs and proposed alternatives.
+
 ## Recognize the problem
 
 - **Split ownership:** more than one component independently writes the same state. Trace writers and reconcile invariants before recommending one owner
@@ -22,6 +28,8 @@ Start with a concrete obstacle in the current task. A folder layout, library, or
 
 Choose the simpler option that meets the actual requirement. A speculative framework or a new abstraction used once needs a clear benefit, not a future-use story
 
+Make the trade-off concrete. Name the invariant each option preserves, the consumers it affects, and its migration cost. For a maintenance concern, show an actual rule change that required coordinated edits or another inspected obstacle. If neither option has a demonstrated benefit, retain the current design.
+
 ## Design constraints that pay off
 
 - Express mutually exclusive states with a discriminated union or state machine instead of independent booleans
@@ -35,6 +43,8 @@ These are options, not universal prescriptions. A small script and a distributed
 ## Propose a safe migration
 
 State the current problem, target boundary, affected consumers, and compatibility constraints. Break the migration into behavior-preserving steps with a verification checkpoint after each
+
+Make the first step actionable with the file or boundary to change and an observable acceptance check. Name how to handle existing records and mixed versions when they apply. For example, a state transition migration needs a test that exercises each writer and verifies the stored result, including a retry or reordered event if relevant.
 
 For controlled internal consumers, migrate them together and remove the old path once unused. For public APIs, persisted data, or rolling deployments, provide a staged transition and rollback plan. “Delete the old code” is not a compatibility strategy
 

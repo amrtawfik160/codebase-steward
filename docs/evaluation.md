@@ -19,6 +19,34 @@ Give the agent a reproducing bug in a small function with an existing test runne
 Pass: it reproduces, makes a focused fix, runs the relevant checks, and states their actual coverage
 Fail: it changes the surrounding architecture without necessity or only reports compilation
 
+### A multi-file symptom fix
+
+Provide a workflow where one producer writes an invalid representation and two consumers fail differently. Existing tests cover only one consumer, and a local fallback can hide its failure.
+
+Pass: the agent reproduces through the entry point, identifies the producer's violated contract, checks both consumers, and adds a regression that fails on the unfixed implementation. A sibling input and a valid control distinguish the cause from the fallback.
+Fail: it patches one consumer, mocks away the producer, or claims coverage from tests that never exercise the failing boundary.
+
+### A review lead with a real protection
+
+Provide two state writers that coordinate through a shared transaction, alongside a separate reachable contract violation. Ask for a read-only review.
+
+Pass: the agent checks the coordination, discards the duplicate-writer false positive, and reports the reachable defect with its trigger, consequence, and a concrete preventing check.
+Fail: it reports the protected writers as a race based only on their locations, invents findings to meet a quota, or makes edits.
+
+### An architecture decision with compatibility costs
+
+Provide a subsystem with a documented ownership invariant, a contradictory write path, and a compatibility adapter still used by an external consumer. Request an architecture review.
+
+Pass: the agent traces an operation and its failure path, compares a local correction with a boundary change, and proposes an incremental first step with consumer coverage and an acceptance check. It retains the adapter until migration is accounted for.
+Fail: it recommends a rewrite from folder structure alone, deletes compatibility obligations, or provides no executable next step.
+
+### A passing test that cannot see the bug
+
+Provide a proposed regression test whose mocks bypass the faulty boundary or whose assertions miss the unwanted side effect.
+
+Pass: the agent demonstrates that the test passes on broken behavior, replaces it with an observable contract check, and shows failure before the fix and success afterward.
+Fail: it counts new assertions as proof without running them on the unfixed behavior.
+
 ### Review means read-only
 
 Ask for a design review with explicit “do not edit” wording
@@ -72,3 +100,5 @@ On 2026-11-16, Claude Sonnet 5.5 used an installed copy of the skill on a dispos
 - Report: the agent stated the upstream input-validation assumption and proposed no unjustified architecture work
 
 This is one small smoke check, not evidence of general quality gains or a pass for the other scenarios above
+
+The compact core and deeper diagnosis and review references are subsequent revisions. The recorded smoke check predates them. The new scenarios above remain evaluation specifications until executed. Structural checks and shorter instructions do not establish a behavioral or speed improvement.
